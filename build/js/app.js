@@ -1,1 +1,33 @@
-!function t(o,n,e){function r(u,a){if(!n[u]){if(!o[u]){var c="function"==typeof require&&require;if(!a&&c)return c(u,!0);if(i)return i(u,!0);var f=new Error("Cannot find module '"+u+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[u]={exports:{}};o[u][0].call(l.exports,function(t){var n=o[u][1][t];return r(n||t)},l,l.exports,t,o,n,e)}return n[u].exports}for(var i="function"==typeof require&&require,u=0;u<e.length;u++)r(e[u]);return r}({1:[function(t,o,n){function e(t){this.skin=t}e.prototype.getLocation=function(t){return t.concat("test")},n.locationModule=e},{}],2:[function(t,o,n){$(document).ready(function(){$("#email-form").submit(function(t){t.preventDefault();var o=$("#email").val();$("#emailText").text("Thank you, "+o+" has been added to our list")})});var e=t("./../js/location.js").locationModule;$(document).ready(function(){$("#location-form").submit(function(t){t.preventDefault();var o=$("#location").val(),n=new e("yellow").getLocation(o);$("#locationText").text(n)})})},{"./../js/location.js":1}]},{},[2]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+function Location(skinName) {
+  this.skin = skinName;
+}
+
+Location.prototype.getLocation = function(location) {
+  return location.concat("test");
+};
+
+exports.locationModule = Location;
+
+},{}],2:[function(require,module,exports){
+$(document).ready(function() {
+  $("#email-form").submit(function(event) {
+    event.preventDefault();
+    var email = $("#email").val();
+    $("#emailText").text("Thank you, " + email + " has been added to our list");
+  });
+});
+
+var Location = require('./../js/location.js').locationModule;
+
+$(document).ready(function() {
+  $('#location-form').submit(function(event) {
+    event.preventDefault();
+    var location = $('#location').val();
+    var locationObject = new Location("yellow");
+    var output = locationObject.getLocation(location);
+    $('#locationText').text(output);
+  });
+});
+
+},{"./../js/location.js":1}]},{},[2]);

@@ -6,7 +6,18 @@ var uglify = require('gulp-uglify');
 var utilities = require('gulp-util');
 var del = require('del');
 var jshint = require('gulp-jshint');
-var lib = require('bower-files')();
+var browserSync = require('browser-sync').create();
+var lib = require('bower-files')( {
+  "overrides":{
+    "bootstrap": {
+      "main": [
+        "less/bootstrap.less",
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    }
+  }
+});
 var buildProduction = utilities.env.production;
 
 gulp.task('concatInterface', function() {
@@ -28,12 +39,14 @@ gulp.task("minifyScripts", ["jsBrowserify"], function() {
     .pipe(gulp.dest("./build/js"));
 });
 
+//build
 gulp.task("build", ['clean'], function() {
   if (buildProduction) {
     gulp.start('minifyScripts');
   } else {
     gulp.start('jsBrowserify');
   }
+  gulp.start('bower');
 });
 
 gulp.task('clean', function() {
@@ -47,10 +60,49 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('default'));
 });
 
-//bower
+//bower js files
 gulp.task('bowerJS', function() {
   return gulp.src(lib.ext('js').files)
     .pipe(concat('vendor.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest('./build/js'));
-})
+});
+
+//bower css files
+gulp.task('bowerCSS', function() {
+  return gulp.src(lib.ext('css').files)
+    .pipe(concat('vendor.css'))
+    .pipe(gulp.dest('./build/css'));
+});
+
+//combine the two bower file concats
+gulp.task('bower', ['bowerJS', 'bowerCSS']);
+
+//start server for dev
+gulp.task('serve', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./",
+      index: "index.html"
+    }
+  });
+
+  gulp.watch(['js/*.js'], ['jsBuild']);
+  gulp.watch(['bower.json']. ['bowerBuild']);
+  gulp.watch(['*.html']. ['htmlBuild']);
+});
+
+//run on watch in serve command
+gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function() {
+  browserSync.reload();
+});
+
+//run if bower.json is modified
+gulp.task('bowerBuild', ['bower'], function() {
+  browserSync.reload();
+});
+
+//triggered on html watcher
+gulp.task('htmlBuild', function() {
+  browserSync.reload();
+});

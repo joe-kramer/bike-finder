@@ -20,5 +20,10 @@
     "gulp-util": "^3.0.8",
     "jshint": "^2.9.5",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "jsonwebtoken": "^7.4.1",
+    "request-promise": "^4.2.1"
   }
 }
